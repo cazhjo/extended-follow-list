@@ -1,0 +1,13 @@
+{
+    "name": "Extended Follow List - Twitch",
+    "description": "Add livestreamers from other platforms to your follow list on Twitch",
+    "version": "1.0",
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": ["storage", "activeTab", "scripting"],
+    "action": {
+        "default_popup": "popup.html"
+    }
+}
