@@ -3,10 +3,16 @@
     "description": "Add livestreamers from other platforms to your follow list on Twitch",
     "version": "1.0",
     "manifest_version": 3,
+    "content_scripts": [
+        {
+            "matches": ["https://www.twitch.tv/*"],
+            "js": ["content-script.js"]
+        }
+    ],
     "background": {
         "service_worker": "background.js"
     },
-    "permissions": ["storage", "activeTab", "scripting"],
+    "permissions": ["storage", "tabs", "scripting"],
     "action": {
         "default_popup": "popup.html"
     }
