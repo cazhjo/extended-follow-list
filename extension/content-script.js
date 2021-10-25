@@ -62,6 +62,8 @@ function createCustom(newInfo) {
 }
 
 window.addEventListener('load', () => {
+    const followList = document.getElementsByClassName("InjectLayout-sc-588ddc-0 dBaosp tw-transition-group")[0]
     let customItem = createCustom(streamerInfo)
     followList.prepend(customItem)
+    console.log(followList)
 })
