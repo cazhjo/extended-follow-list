@@ -6,11 +6,13 @@
     "content_scripts": [
         {
             "matches": ["https://www.twitch.tv/*"],
-            "js": ["content-script.js"]
+            "js": ["content-script.js"],
+            "type": "module"
         }
     ],
     "background": {
-        "service_worker": "background.js"
+        "service_worker": "background.js",
+        "type": "module"
     },
     "permissions": ["storage", "tabs", "scripting"],
     "action": {
