@@ -4,38 +4,38 @@ const streamerInfo = {
     url: "https://www.youtube.com/watch?v=KmxEidsVlTc",
     game: "Youtube",
     viewCount: 3533520,
-
 }
 
 const customStreamers = [streamerInfo]
 
 const replaceHTMLCollection = (parent, array) => {
-    parent.innerHTML = ""
+    const newParent = document.createElement("div")
+
     for (let item of array)
-        parent.appendChild(item)
+        newParent.appendChild(item)
+
+    parent.innerHTML = newParent.innerHTML
 }
 
 const updateFollowList = (followList, streamers) => {
-    let top12 = [...followList.children].slice(0, 12)
+    let top12 = [...followList.children]
     for (let streamer of streamers) {
-        // let current = followList.getElementsByClassName(streamer.name)[0]
-        // if (current) {
-        //     current.getElementsByClassName["viewCount"].innerText = formatViewCount(streamer.viewCount)
-        //     continue
-        // }
+        let current = followList.getElementsByClassName(streamer.name)[0]
+        if (current) {
+            current.getElementsByClassName["viewCount"].innerText = formatViewCount(streamer.viewCount)
+            continue
+        }
 
         for (let i = 0; i < top12.length; i++) {
             let viewCount = unformatViewCount(top12[i].getElementsByClassName("Layout-sc-nxg1ff-0 faqhMI")[0].firstChild.innerText)
             if (streamer.viewCount >= viewCount) {
                 top12.splice(i, 0, twitchFollowItem(streamer))
+                break
             }
         }
     }
 
-    // if (top12.length > 12)
-    //     top12.pop()
-
-    // replaceHTMLCollection(followList, top12)
+    replaceHTMLCollection(followList, top12.slice(0, 12))
 }
 
 window.addEventListener('load', () => {
@@ -43,7 +43,5 @@ window.addEventListener('load', () => {
     const followList = document.getElementsByClassName("InjectLayout-sc-588ddc-0 dBaosp tw-transition-group")[0]
     console.log(followList)
     updateFollowList(followList, customStreamers)
-    // let customItem = twitchFollowItem(streamerInfo)
-    // followList.prepend(customItem)
 })
 
