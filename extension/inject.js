@@ -9,14 +9,15 @@ const streamerInfo = {
 
 const customStreamers = [streamerInfo];
 
-const twitchFollowItem = ({ name, avatar, title, viewCount, game }) => {
+const twitchFollowItem = ({ name, title, viewCount, game }) => {
     const id = String(Math.random() * (100000000 - 10000000) + 10000000)
+    const avatar = "https://yt3.ggpht.com/tvkeak3Sfk6blV7sMIO6CjhUMSTmNTSgiBF2NOaj7V0xuZPEvkmARxgKtCUFpyONef-LS1ZW=s88-c-k-c0x00ffffff-no-rj"
     return {
         "trackingID": id,
         "promotionsCampaignID": "",
         "user": {
             "id": id,
-            "login": "\\",
+            "login": "",
             "displayName": name,
             "profileImageURL": avatar,
             "primaryColorHex": "FFBF00",
@@ -60,27 +61,32 @@ const twitchFollowItem = ({ name, avatar, title, viewCount, game }) => {
         "id": id
     }
 }
+(function () {
+    const realFetch = window.fetch;
+    window.fetch = async (...args) => {
+        const response = await realFetch(...args);
+        const clone = await response.clone().json()
 
-const { fetch: origFetch } = window;
-window.fetch = async (...args) => {
-    const response = await origFetch(...args);
-    const clone = await response.clone().json()
+        if (clone?.[0]?.data?.personalSections) {
+            const followlist = clone[0].data.personalSections[0].items
+            chrome.runtime.sendMessage('get-streamers', (response) => {
+                for (let streamer of response) {
+                    followlist.splice(0, 0, twitchFollowItem(Object.values(streamer)[0])) // TODO: sort list
+                }
+            })
+        }
 
-    if (clone?.[0]?.data?.personalSections) {
-        const followlist = clone[0].data.personalSections[0].items
-        followlist.splice(0, 0, twitchFollowItem(streamerInfo)) // TODO: sort list and handle multiple custom objects
-    }
+        const newResponse = {
+            url: response.url,
+            type: response.type,
+            statusText: response.statusText,
+            status: response.status,
+            redirected: response.redirected,
+            ok: response.ok,
+            headers: response.headers,
+            bodyUsed: response.bodyUsed,
+        }
 
-    const newResponse = {
-        url: response.url,
-        type: response.type,
-        statusText: response.statusText,
-        status: response.status,
-        redirected: response.redirected,
-        ok: response.ok,
-        headers: response.headers,
-        bodyUsed: response.bodyUsed,
-    }
-
-    return new Response(new Blob([JSON.stringify(clone, null, 2)], { type: 'application/json' }), newResponse);
-};
+        return new Response(new Blob([JSON.stringify(clone, null, 2)], { type: 'application/json' }), newResponse);
+    };
+})()

@@ -9,8 +9,7 @@
                 "https://*.twitch.tv/*"
             ],
             "js": [
-                "content-script.js",
-                "custom-follow-info.js"
+                "content-script.js"
             ]
         }
     ],
